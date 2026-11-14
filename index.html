@@ -1,59 +1,349 @@
-<!doctype html>
-<html lang="pt-PT">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#fbe8e5">
-  <title>A ilustração ganha vida | WebAR</title>
-  <link rel="stylesheet" href="./css/style.css">
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-</head>
-<body>
-  <main class="intro" id="intro">
-    <div class="intro-card">
-      <p class="eyebrow">EXPERIÊNCIA WEBAR</p>
-      <h1>A ilustração ganha vida</h1>
-      <p>Permita o acesso à câmara e aponte o telemóvel para a ilustração.</p>
-      <button id="startButton">Iniciar experiência</button>
-      <p class="small">Não é necessária uma aplicação. Utilize Safari ou Chrome e uma ligação à Internet.</p>
-      <p class="error" id="error" role="alert"></p>
-    </div>
-  </main>
 
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>A ilustração ganha vida | WebAR</title>
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <!-- MindAR -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #fbe8e5;
+    }
+
+    #interface {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 35px 20px;
+      pointer-events: none;
+    }
+
+    #topo {
+      text-align: center;
+      color: #26364b;
+      background: rgba(255,255,255,0.88);
+      padding: 14px 22px;
+      border-radius: 18px;
+      max-width: 330px;
+    }
+
+    #topo h1 {
+      font-size: 20px;
+      margin: 0 0 6px;
+    }
+
+    #topo p {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    #mensagem {
+      background: rgba(255,255,255,0.92);
+      color: #26364b;
+      border-radius: 20px;
+      padding: 12px 18px;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    #iniciar {
+      pointer-events: auto;
+      background: #f45b43;
+      color: white;
+      border: none;
+      padding: 17px 35px;
+      border-radius: 35px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+    #iniciar:disabled {
+      opacity: 0.6;
+    }
+
+    a-scene {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .escondido {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Interface -->
+  <div id="interface">
+
+    <div id="topo">
+      <h1>A ilustração ganha vida</h1>
+      <p>Uma experiência de realidade aumentada</p>
+    </div>
+
+    <div style="text-align:center;">
+      <div id="mensagem">
+        Carrega em iniciar e aponta a câmara para a ilustração.
+      </div>
+
+      <button id="iniciar">
+        INICIAR EXPERIÊNCIA
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Recursos -->
   <a-scene
-    id="arScene"
-    mindar-image="imageTargetSrc: ./assets/target.mind; autoStart: false; uiScanning: true; maxTrack: 1"
+    mindar-image="
+      imageTargetSrc: ./assets/target.mind;
+      autoStart: false;
+      uiLoading: no;
+      uiScanning: no;
+      uiError: no;
+    "
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights"
+    renderer="colorManagement: true; physicallyCorrectLights: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
-    embedded>
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    embedded
+  >
 
-    <!-- O alvo tem largura 1 e altura proporcional à imagem original (1372/1920). -->
-    <a-entity mindar-image-target="targetIndex: 0" id="imageTarget">
-      <!-- Estrelas decorativas que flutuam junto das personagens. -->
-      <a-entity class="float-star" geometry="primitive: octahedron; radius: 0.035" material="color: #f5a623; emissive: #f5a623; emissiveIntensity: 0.25" position="-0.31 0.20 0.06" animation="property: position; to: -0.31 0.28 0.06; dir: alternate; dur: 1250; loop: true; easing: easeInOutSine"></a-entity>
-      <a-entity class="float-star" geometry="primitive: octahedron; radius: 0.026" material="color: #f36f62; emissive: #f36f62; emissiveIntensity: 0.2" position="0.02 0.29 0.06" animation="property: position; to: 0.02 0.36 0.06; dir: alternate; dur: 950; loop: true; easing: easeInOutSine"></a-entity>
-      <a-entity class="float-star" geometry="primitive: octahedron; radius: 0.032" material="color: #f5a623; emissive: #f5a623; emissiveIntensity: 0.25" position="0.34 0.17 0.06" animation="property: position; to: 0.34 0.25 0.06; dir: alternate; dur: 1450; loop: true; easing: easeInOutSine"></a-entity>
+    <a-assets>
+      <img
+        id="originalImage"
+        src="./assets/ilustracao.jpg"
+        crossorigin="anonymous"
+      >
+    </a-assets>
 
-      <!-- Pequenos círculos pulsantes, inspirados nos pontos da ilustração. -->
-      <a-sphere radius="0.018" color="#f6b84b" position="-0.43 -0.08 0.07" animation="property: scale; to: 1.8 1.8 1.8; dir: alternate; dur: 900; loop: true"></a-sphere>
-      <a-sphere radius="0.015" color="#f27e72" position="0.17 -0.18 0.07" animation="property: scale; to: 2 2 2; dir: alternate; dur: 1100; loop: true"></a-sphere>
-      <a-sphere radius="0.018" color="#f6b84b" position="0.43 -0.12 0.07" animation="property: scale; to: 1.7 1.7 1.7; dir: alternate; dur: 1000; loop: true"></a-sphere>
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false"
+    ></a-camera>
 
-      <!-- Arcos de movimento junto aos saltos. -->
-      <a-torus color="#f27e72" radius="0.055" radius-tubular="0.004" arc="210" position="-0.29 -0.27 0.07" rotation="0 0 -25" animation="property: rotation; to: 0 0 15; dir: alternate; dur: 1300; loop: true"></a-torus>
-      <a-torus color="#f27e72" radius="0.06" radius-tubular="0.004" arc="210" position="0.30 -0.27 0.07" rotation="0 0 25" animation="property: rotation; to: 0 0 -15; dir: alternate; dur: 1150; loop: true"></a-torus>
+    <!-- IMAGEM DE REFERÊNCIA E ANIMAÇÕES -->
+    <a-entity
+      id="imageTarget"
+      mindar-image-target="targetIndex: 0"
+    >
 
-      <!-- Confettis discretos com rotação e deslocação. -->
-      <a-entity geometry="primitive: tetrahedron; radius: 0.018" material="color: #ef6b4c" position="-0.08 0.05 0.08" animation="property: rotation; to: 0 0 360; dur: 2600; loop: true; easing: linear"></a-entity>
-      <a-entity geometry="primitive: tetrahedron; radius: 0.014" material="color: #e9b64e" position="0.23 0.02 0.08" animation="property: position; to: 0.23 0.10 0.08; dir: alternate; dur: 1000; loop: true"></a-entity>
-      <a-entity geometry="primitive: tetrahedron; radius: 0.016" material="color: #ef6b4c" position="-0.43 0.05 0.08" animation="property: rotation; to: 360 180 360; dur: 3200; loop: true; easing: linear"></a-entity>
+      <!-- Ilustração original -->
+      <a-plane
+        src="#originalImage"
+        width="1"
+        height="0.7133"
+        position="0 0 0"
+        material="shader: flat; side: double"
+      ></a-plane>
+
+      <!-- Estrela esquerda -->
+      <a-entity
+        geometry="primitive: tetrahedron; radius: 0.035"
+        material="color: #ffad21; shader: flat"
+        position="-0.34 0.23 0.025"
+        animation__float="
+          property: position;
+          to: -0.34 0.28 0.025;
+          dur: 1800;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine
+        "
+        animation__rotate="
+          property: rotation;
+          to: 0 0 360;
+          dur: 5000;
+          loop: true;
+          easing: linear
+        "
+      ></a-entity>
+
+      <!-- Estrela direita -->
+      <a-entity
+        geometry="primitive: tetrahedron; radius: 0.028"
+        material="color: #f45b43; shader: flat"
+        position="0.34 0.25 0.025"
+        animation__float="
+          property: position;
+          to: 0.34 0.20 0.025;
+          dur: 2200;
+          dir: alternate;
+          loop: true
+        "
+        animation__rotate="
+          property: rotation;
+          to: 0 0 -360;
+          dur: 6000;
+          loop: true;
+          easing: linear
+        "
+      ></a-entity>
+
+      <!-- Esfera esquerda -->
+      <a-sphere
+        radius="0.022"
+        color="#f7b53c"
+        position="-0.43 -0.12 0.03"
+        animation="
+          property: position;
+          to: -0.43 -0.17 0.03;
+          dur: 1600;
+          dir: alternate;
+          loop: true
+        "
+      ></a-sphere>
+
+      <!-- Esfera central -->
+      <a-sphere
+        radius="0.025"
+        color="#f47b70"
+        position="0 -0.24 0.03"
+        animation="
+          property: position;
+          to: 0 -0.19 0.03;
+          dur: 1900;
+          dir: alternate;
+          loop: true
+        "
+      ></a-sphere>
+
+      <!-- Esfera direita -->
+      <a-sphere
+        radius="0.018"
+        color="#f7b53c"
+        position="0.43 -0.12 0.03"
+        animation="
+          property: position;
+          to: 0.43 -0.16 0.03;
+          dur: 1400;
+          dir: alternate;
+          loop: true
+        "
+      ></a-sphere>
+
+      <!-- Arco esquerdo -->
+      <a-torus
+        radius="0.055"
+        radius-tubular="0.008"
+        arc="180"
+        color="#f47b70"
+        position="-0.30 -0.29 0.035"
+        rotation="0 0 0"
+        animation="
+          property: rotation;
+          to: 0 0 15;
+          dur: 2000;
+          dir: alternate;
+          loop: true
+        "
+      ></a-torus>
+
+      <!-- Arco direito -->
+      <a-torus
+        radius="0.055"
+        radius-tubular="0.008"
+        arc="180"
+        color="#f47b70"
+        position="0.30 -0.29 0.035"
+        animation="
+          property: rotation;
+          to: 0 0 -15;
+          dur: 2000;
+          dir: alternate;
+          loop: true
+        "
+      ></a-torus>
+
+      <!-- Pequena estrela central -->
+      <a-entity
+        geometry="primitive: tetrahedron; radius: 0.018"
+        material="color: #ffad21; shader: flat"
+        position="0 0.32 0.03"
+        animation="
+          property: scale;
+          to: 1.5 1.5 1.5;
+          dur: 1000;
+          dir: alternate;
+          loop: true
+        "
+      ></a-entity>
+
     </a-entity>
+
   </a-scene>
 
-  <script src="./js/ar.js"></script>
+  <!-- Controlos da experiência -->
+  <script>
+    const botao = document.querySelector("#iniciar");
+    const mensagem = document.querySelector("#mensagem");
+    const interfaceAR = document.querySelector("#interface");
+    const cena = document.querySelector("a-scene");
+    const alvo = document.querySelector("#imageTarget");
+
+    let iniciada = false;
+
+    alvo.addEventListener("targetFound", () => {
+      mensagem.textContent = "Ilustração reconhecida! Aproveita a experiência.";
+    });
+
+    alvo.addEventListener("targetLost", () => {
+      mensagem.textContent = "Aponta novamente para a ilustração.";
+    });
+
+    botao.addEventListener("click", async () => {
+
+      if (iniciada) return;
+
+      botao.disabled = true;
+      mensagem.textContent = "A iniciar a câmara...";
+
+      try {
+        const sistema = cena.systems["mindar-image"];
+
+        await sistema.start();
+
+        iniciada = true;
+        mensagem.textContent = "Procura a ilustração com a câmara.";
+        botao.classList.add("escondido");
+
+      } catch (erro) {
+        console.error("Erro ao iniciar AR:", erro);
+
+        mensagem.textContent =
+          "Não foi possível iniciar a câmara. Verifica as permissões e tenta novamente.";
+
+        botao.disabled = false;
+      }
+
+    });
+  </script>
+
 </body>
 </html>
